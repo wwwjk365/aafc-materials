@@ -1,0 +1,75 @@
+---
+title: "Introductions to pbdR"
+output:
+  revealjs::revealjs_presentation:
+    theme: simple
+    highlight: tango
+    center: true
+    smart: true
+    incremental: true
+---
+
+## Batch Execution
+
+- Running a serial R program in batch: 
+
+```r
+Rscript my_script.r 
+
+R CMD BATCH my_script.R
+```
+- Running a parallel (with MPI) R program in batch
+
+```r
+mpirun -np 2 Rscript my_par_script.r
+```
+
+## Single Program/Multiple Data (SPMD)
+
+- SPMD is arguably the simplest extension of serial programming
+- Only one program is written, executed in batch on all processors
+- Different processors are autonomous; there is no manager
+- Dominant programming model for large machines for 30 years
+
+
+## Introduction to pbdMPI
+
+- MPI: Standard for managing communications (data and instructions) between different nodes/computers. 
+- Implementations: OpenMPI, MPICH2, Cray MPT, ...
+- Enables parallelism (via communication) on distributed machines
+- Communicator: manages communications between processors 
+
+---
+
+The general process for directly — or indirectly — utilizing MPI in SPMD programs goes something like this: 
+
+1. Initialize communicator(s). 
+2. Have each process read in its portion of the data. 
+3. Perform computations. 
+4. Communicate results. 
+5. Shut down the communicator(s).
+
+## Let’s get our systems setup
+
+## Basic Communicator Wrangling 
+
+- Managing a Communicator:  Create and destroy communicators
+    - `init()` Initialize communicator 
+    - `finalize()` shut down communicator(s) 
+- Rank query: Determine the processor’s position in the communicator
+    -  `comm.rank()` “who am I?” 
+    -  `comm.size()` “how many of us are there?” 
+- Barrier: No processor can proceed until all processors can proceed
+    - “computation wall” that only all processors together can tear down `barrier()`
+
+## Simple pbdMIP Example
+
+```{r}
+library(pbdMPI, quietly = )
+init()
+
+myRank <- comm.rank() + 1 # comm index starts at 0, not 1
+print(myRank)
+
+finalize()
+```
