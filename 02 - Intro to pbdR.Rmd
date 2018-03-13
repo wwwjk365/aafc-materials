@@ -106,3 +106,5 @@ containing all of those numbers.
 - Broadcast: One processor has a number `x.gbd` that every other processor should also
 have.
     - `bcast(x.gbd)`
+    
+    
