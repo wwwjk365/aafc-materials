@@ -64,8 +64,8 @@ The general process for directly — or indirectly — utilizing MPI in SPMD pro
 
 ## Simple pbdMIP Example
 
-```{r}
-library(pbdMPI, quietly = )
+```r
+library(pbdMPI, quietly = TRUE)
 init()
 
 myRank <- comm.rank() + 1 # comm index starts at 0, not 1
@@ -73,3 +73,36 @@ print(myRank)
 
 finalize()
 ```
+- Use `mpiexec -np 2 Rscript mpiex1.r` to run
+
+---
+
+## Your turn
+
+- Try to print "Hello,world." on worker 0
+
+```r
+library(pbdMPI, quietly = TRUE)
+init()
+
+myRank <- comm.rank() 
+if ( myRank == 0){
+  print ("Hello,world.")
+}
+
+finalize()
+```
+
+## Reduce, Broadcast and Gather
+
+- Reduction: Say each processor has a number `x.gbd`. Add all of them up, 
+find the largest,find the smallest, ...
+    - `reduce(x.gbd, op=’sum’)` - only one processor gets result (default is 0)
+    - `allreduce(x.gbd, op=’sum’)` - every processor gets result
+- Gather: Say each processor has a number. Create a new object on some processor(s)
+containing all of those numbers.
+    - `gather(x.gbd)` — only one processor gets result
+    - `allgather(x.gbd)` — every processor gets result
+- Broadcast: One processor has a number `x.gbd` that every other processor should also
+have.
+    - `bcast(x.gbd)`
