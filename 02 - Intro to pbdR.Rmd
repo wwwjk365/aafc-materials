@@ -108,3 +108,74 @@ have.
     - `bcast(x.gbd)`
     
     
+## Example 2
+
+```r
+library(pbdMPI, quiet = TRUE)
+init()
+n.gbd <- sample(1:10, size = 1)
+sm <- allreduce(n.gbd) # default op is ’sum’
+print(sm)
+gt <- allgather(n.gbd)
+print(gt)
+finalize()
+
+```
+
+- try run this example multiple times
+
+## RNG Seeds
+
+- Print: printing with control over which processor prints.
+    - `comm.print(x, ...)`
+    - `comm.cat(x, ...)`
+- Random Seeds:
+    - `comm.set.seed(seed, diff=FALSE)`: every processor uses the seed seed
+    - `comm.set.seed(seed, diff=TRUE)`: every processor uses an independent seed (via `rlecuyer`)
+
+---
+
+```r
+library(pbdMPI, quietly = TRUE)
+init()
+
+myRank <- comm.rank() 
+
+comm.print("Hello, world")
+
+finalize()
+```
+
+## Caution
+
+- Only print *results*, not *computations*
+- In short, printing stored objects is safe
+
+
+## Apply, Lapply, and Sapply
+
+- `pbdApply(X, MARGIN, FUN, ...)` — analogue of apply()
+- `pbdLapply(X, FUN, ...)` — analogue of lapply()
+- `pbdSapply(X, FUN, ...)` — analogue of sapply()
+
+---
+
+example
+
+```r
+library(pbdMPI, quiet = TRUE)
+init()
+
+n <- 100
+x <- split((1:n) + n * comm.rank(), rep(1:10, each = 10))
+sm <- pbdLapply(x, sum)
+comm.print(unlist(sm))
+
+finalize()
+```
+
+## Exercises
+
+1. Write a script that will have each processor randomly take a sample of size 1 of TRUE and FALSE. Have each processor print its result.
+2. Modify the script in Exercise 3-1 above to determine if any processors sampled TRUE. Do the same to determine if all processors sampled TRUE. In each case, print the result. Compare to the functions comm.all() and comm.any(). 
+3. In pbdMPI, there is a parallel sorting function called comm.sort() which is similar to the usual sort() of R. Implement parallel equivalents to the usual order() and rank() of R.
