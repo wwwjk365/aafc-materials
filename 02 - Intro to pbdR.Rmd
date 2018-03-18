@@ -217,9 +217,9 @@ finalize()
 3. In pbdMPI, there is a parallel sorting function called comm.sort() which is similar to the usual sort() of R. Implement parallel equivalents to the usual order() and rank() of R.
 
 
-## Stats Examples
+# Stats Examples
 
-### Example 1 -- Monte Carlo for Pi
+## Example 1 -- Monte Carlo for Pi
 ```r
 library(pbdMPI, quiet = TRUE)
 init()
@@ -234,26 +234,6 @@ comm.print (PI)
 finalize()
 ```
 
-
-
-### Example 2 --- Sample Mean and Variance
-
-```r
-mpi.stat <- function(x.gbd) {
-  ### For mean (x).
-  N <- allreduce(length(x.gbd), op = "sum")
-  bar.x.gbd <- sum(x.gbd / N)
-
-  bar.x <- allreduce(bar.x.gbd, op = "sum")
-  ### For var(x).
-  s.x.gbd <- sum(x.gbd^2 / (N - 1))
-  s.x <- allreduce(s.x.gbd, op = "sum") - bar.x^2 * (N / (N - 1))
-
-  list(mean = bar.x, s = s.x)
-} # End of mpi.stat ()
-
-
-```
 
 
 ## Example 2 --- Sample Mean and Variance
@@ -273,4 +253,67 @@ mpi.stat <- function(x.gbd) {
 } # End of mpi.stat ()
 
 
+```
+
+
+## Example 3 --- Random Forest
+
+```r
+set.seed (seed =123)
+n <- nrow (LetterRecognition)
+
+## get train data
+
+n_train <- floor (0.8*n)
+i_train <- sample.int(n , n_train) # Use 4/5 of the data to train
+train <- LetterRecognition[i_train, ]
+test <- LetterRecognition[-i_train , ]
+
+ ## train random forest
+my.k <- 500
+rf.all <- randomForest(lettr ~ ., train , ntree = my.k ,norm.votes = FALSE)
+
+## predict test data
+pred <- predict(rf.all, test )
+correct <- sum(pred == test$lettr )
+cat(" Proportion Correct:", correct/(n - n_train) , "\n")
+
+```
+
+---
+
+```r
+library(randomForest)
+library(mlbench)
+library(pbdMPI)
+
+init()
+data("LetterRecognition")
+comm.set.seed(seed =123)
+n <- nrow (LetterRecognition)
+
+## get train data
+
+n_train <- floor(0.8*n)
+i_train <- sample.int(n , n_train) # Use 4/5 of the data to train
+train <- LetterRecognition[i_train, ]
+my.test_rows <- get.jid(n-n_train)
+test <- LetterRecognition[my.test_rows, ]
+
+## train random forest
+comm.set.seed( seed = 1e6*runif(1), diff=TRUE)
+
+my.k <- floor(500/comm.size())
+my.rf <- randomForest(lettr ~ ., train , ntree = my.k ,norm.votes = FALSE)
+
+
+rf.each <- allgather(my.rf)
+rf.all <- do.call(combine, rf.each)
+
+## predict test data
+pred <- predict(rf.all, test )
+correct <- allreduce(sum(pred == test$lettr ))
+comm.cat(" Proportion Correct:", correct/(n - n_train) , "\n")
+
+finalize()
 ```
