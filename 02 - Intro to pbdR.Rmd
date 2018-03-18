@@ -225,9 +225,9 @@ library(pbdMPI, quiet = TRUE)
 init()
 
 N.gbd <- 1000
-X.gbd <- matrix ( runif (N.gbd * 2) , ncol = 2)
+X.gbd <- matrix(runif (N.gbd * 2) , ncol = 2)
 r.gbd <- sum( rowSums (X.gbd ˆ2) <= 1)
-ret <- allreduce (c(N.gbd , r.gbd), op = "sum")
+ret <- allreduce(c(N.gbd , r.gbd), op = "sum")
 PI <- 4 * ret [2] / ret [1]
 comm.print (PI)
 
