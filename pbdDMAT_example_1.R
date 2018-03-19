@@ -27,8 +27,8 @@ library(pbdDMAT, quiet=TRUE)
 init.grid() 
 
 # Number of rows and columns to generate
-nrows <- 5e2
-ncols <- 5e2
+nrows <- 5e3
+ncols <- 5e3
 
 mn <- 10
 sdd <- 100
@@ -52,18 +52,7 @@ db <- as.ddmatrix(x=b, bldim=bldim)
 dx_inv <- solve( t(dx) %*% dx )
 solns <- solve(dx_inv, db)
 
-# Undistribute solutions to process 0
-pbd_dx_inv <- as.matrix(dx_inv, proc.dest=0)
-pbd_solns <- as.matrix(solns, proc.dest=0)
 
-# Compare our solution with R's --- not in parallel
-if (comm.rank()==0) {
-  r_x_inv <- solve( t(x) %*% x )
-  r_solns <- solve(r_x_inv, b)
-  
-  print(all.equal(pbd_dx_inv, r_x_inv))
-  print(all.equal(pbd_solns, r_solns))
-}
 
 # shut down the MPI communicators
 finalize()

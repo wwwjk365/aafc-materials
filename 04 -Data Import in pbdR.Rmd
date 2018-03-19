@@ -1,0 +1,46 @@
+---
+title: "Distributed Data"
+output:
+  revealjs::revealjs_presentation:
+    theme: simple
+    highlight: tango
+    center: true
+    smart: true
+    incremental: true
+---
+
+# Data Input
+
+## CSV Data: Read Serial then Distribute
+
+```r
+library(pbdDMAT)
+
+if (comm.rank() == 0) { # only read on process 0
+  x <- as.matrix(read.csv("myfile.csv "))
+} else {
+  x <- NULL
+}
+dx <- as.ddmatrix(x)
+
+```
+---
+
+
+```r
+dx <- pbdDEMO:::read.csv.ddmatrix("../extra/data/x.csv", 
+                        sep=",", nrows=10, ncols=10, 
+                        header=TRUE, bldim=4, 
+                        num.rdrs=2, ICTXT=0)
+
+print(dx)
+```
+
+
+## Conclusion
+Read the most natural way from disk then redistribute
+Mostly “do it yourself” with bounding box
+Parallel file system for big data
+Binary files for true parallel reads
+Use correct number of readers vs number of storage servers
+Redistribution help from ddmatrix functions
