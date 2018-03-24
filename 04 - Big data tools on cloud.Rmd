@@ -180,13 +180,15 @@ Hadoop is just one of the ways to implement Spark.
 ![](imgs/hadoop2.png)
 
 ---
+
 ![](imgs/hadoop3.png)
 
 ---
+
 ![](imgs/hadoop4.png)
 
 ---
 
 ![](imgs/devops.PNG)
 
----
+## Setup a YARN cluster in 10 minutes
