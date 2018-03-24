@@ -11,6 +11,8 @@ output:
 
 # Distributed Data Structures
 
+## How data get stored in clusters?
+
 ## Distributed Matrices
 
 ![](imgs/dmat5.PNG)
