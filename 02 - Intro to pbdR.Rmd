@@ -12,14 +12,13 @@ output:
 ## Batch Execution
 
 - Running a serial R program in batch: 
-
 ```r
-Rscript my_script.r 
-
+Rscript my_script.r
+# or
 R CMD BATCH my_script.R
 ```
-- Running a parallel (with MPI) R program in batch
 
+- Running a parallel (with MPI) R program in batch
 ```r
 mpirun -np 2 Rscript my_par_script.r
 ```
@@ -82,7 +81,9 @@ finalize()
 
 ## Your turn
 
-- Try to print "Hello,world." on worker 0
+> Try to print "Hello,world." on worker 0
+
+---
 
 ```r
 library(pbdMPI, quietly = TRUE)
@@ -95,6 +96,20 @@ if ( myRank == 0){
 
 finalize()
 ```
+
+## What is the output of this
+
+```r
+library(pbdMPI, quietly = TRUE)
+init()
+comm.print("Hello , world")
+comm.print("Hello , world too")
+comm.print("Hello again ", all.rank = TRUE, quiet = TRUE)
+finalize()
+```
+
+---
+
 
 ## MPI Operations
 
@@ -185,8 +200,12 @@ finalize()
 ## Caution
 
 - Only print *results*, not *computations*
+    - `comm . print ( myFunction (x.gbd ))`
 - In short, printing stored objects is safe
-
+```r
+myResult <- myFunction(x)
+comm.print(myResult)
+```
 
 ## Apply, Lapply, and Sapply
 

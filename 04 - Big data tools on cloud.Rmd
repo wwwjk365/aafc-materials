@@ -23,7 +23,7 @@ output:
 
 ## Example: 1D diffusion
 
-- 52 LInes, 20+ biolerplate
+- 52 Lines, 20+ biolerplate
 
 ```r
 #!/usr/bin/env python
@@ -146,14 +146,12 @@ if __name__ == "__main__":
 - Hadoop is an Apache open source framework written in java that allows distributed processing of large datasets across clusters of computers using simple programming models.
 
 - Four modules
+
 ---
 
 - Hadoop Common: These are Java libraries and utilities required by other Hadoop modules. 
-
 - Hadoop YARN: This is a framework for job scheduling and cluster resource management.
-
 - Hadoop Distributed File System (HDFS™): A distributed file system that provides high-throughput access to application data.
-
 - Hadoop MapReduce: This is YARN-based system for parallel processing of large data sets.
 
 ## Spark
@@ -175,20 +173,28 @@ Hadoop is just one of the ways to implement Spark.
 
 ![](imgs/hadoop1.png)
 
+
 ---
 
 ![](imgs/hadoop2.png)
 
+
 ---
+
 
 ![](imgs/hadoop3.png)
 
+
 ---
 
+
 ![](imgs/hadoop4.png)
+
 
 ---
 
 ![](imgs/devops.PNG)
 
 ## Setup a YARN cluster in 10 minutes
+
+![](imgs/yarn.PNG)
