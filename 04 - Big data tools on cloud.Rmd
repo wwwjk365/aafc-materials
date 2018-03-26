@@ -7,6 +7,7 @@ output:
     center: true
     smart: true
     incremental: true
+    self_contained: true
 ---
 
 
@@ -179,7 +180,7 @@ Hadoop is just one of the ways to implement Spark.
 ![](imgs/hadoop2.png)
 
 
----
+## YARN(Yet Another Resource Negotiator) Cluster
 
 
 ![](imgs/hadoop3.png)
@@ -195,6 +196,43 @@ Hadoop is just one of the ways to implement Spark.
 
 ![](imgs/devops.PNG)
 
-## Setup a YARN cluster in 10 minutes
+
+## YARN cluster introduction
+
+
+## Cluster Basics
+
+![](imgs/yarn1.png)
+
+---
+
+## YARN Cluster
+
+![](imgs/yarn2.png)
+
+
+
+## YARN Requires a Global View
+
+![](imgs/yarn3.png)
+
+## Container
+
+![](imgs/contariner.png)
+
+- You can think of a container as a request to hold resources on the YARN cluster
+- Once a hold has been granted on a host, the NodeManager launches a process called a task
+
+
+## MapReduce
+
+![](imgs/map1.png)
+
+## Putting it Together: MapReduce and YARN
+
+![](imgs/map2.png)
+
+
+## Setup a YARN cluster in 10 minutes on Cloud
 
 ![](imgs/yarn.PNG)

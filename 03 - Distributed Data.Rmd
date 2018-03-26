@@ -7,9 +7,10 @@ output:
     center: true
     smart: true
     incremental: true
+    self_contained: true
 ---
 
-# Distributed Data Structures
+## Distributed Data Structures
 
 ## How data get stored in clusters?
 
@@ -57,7 +58,7 @@ ddmatrix.
     - `%*%`, `solve()`, `svd()`, `norm()`, ...
     - `median()`, `mean()`, `rowSums()`, ...
 
-## Example
+## Example 1 - Some Functions
 
 ```r
 library(pbdDMAT, quiet = TRUE)
@@ -80,11 +81,39 @@ comm.print(mx, all.rank = TRUE)
 finalize()
 ```
 
-## More Example 
+## Example 2 - Transformations
 
+```r
+library(pbdDMAT, quiet = TRUE)
+init.grid()
+comm.set.seed(1234, diff = TRUE)
+dx <- ddmatrix(data = -3:3, nrow = 10, ncol = 10)
+dx <- ceiling(sqrt(abs(dx)))
+x <- as.matrix(dx)
+comm.print(x)
 
+finalize()
 
-# Data Input
+```
+
+## Example 3 - Matrix Arithmetic
+
+```r
+library(pbdDMAT, quiet = TRUE)
+init.grid()
+
+dx <- ddmatrix(data = -3:3, nrow = 10, ncol = 10)
+vec <- 1:2
+
+dy <- (dx - vec) %*% dx
+
+y <- as.matrix(dy)
+comm.print(y)
+
+finalize()
+```
+
+## Data Input
 
 ## CSV Data: Read Serial then Distribute
 
