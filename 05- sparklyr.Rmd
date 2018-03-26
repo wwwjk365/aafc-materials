@@ -1,5 +1,6 @@
 ---
 title: "Sparklyr In Practice"
+author: Michael Yan
 output:
   revealjs::revealjs_presentation:
     theme: simple

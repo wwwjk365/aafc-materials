@@ -1,5 +1,6 @@
 ---
 title: "Hadoop and Spark"
+author: Michael Yan
 output:
   revealjs::revealjs_presentation:
     theme: simple

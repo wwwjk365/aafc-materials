@@ -1,5 +1,6 @@
 ---
 title: "Distributed Data"
+author: Michael Yan
 output:
   revealjs::revealjs_presentation:
     theme: simple
@@ -129,3 +130,9 @@ dx <- as.ddmatrix(x)
 
 ```
 
+## Conclusion
+- Read the most natural way from disk then redistribute
+- Mostly “do it yourself” with bounding box
+- Parallel file system for big data
+- Binary files for true parallel reads
+- Use correct number of readers vs number of storage servers

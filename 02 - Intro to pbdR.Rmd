@@ -1,5 +1,6 @@
 ---
 title: "Introductions to pbdR"
+author: Michael Yan
 output:
   revealjs::revealjs_presentation:
     theme: simple

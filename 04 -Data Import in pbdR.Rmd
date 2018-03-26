@@ -1,5 +1,6 @@
 ---
 title: "Distributed Data"
+author: Michael Yan
 output:
   revealjs::revealjs_presentation:
     theme: simple
