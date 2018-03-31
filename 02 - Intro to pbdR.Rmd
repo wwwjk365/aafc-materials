@@ -81,7 +81,7 @@ finalize()
 
 ---
 
-## Your turn
+## Your turn {data-background=#4CDBB7}
 
 > Try to print "Hello,world." on worker 0
 
@@ -126,7 +126,37 @@ finalize()
 - `reduce(x, op=’sum’)` — reduce to one
 - `allreduce(x, op=’sum’)` — reduce to all
 
+```r
+library(pbdMPI, quiet = TRUE)
+init()
 
+n <- sample(1:10, size = 1)
+
+sm <- allreduce(n, op = "sum")
+comm.print(sm, all.rank = TRUE)
+
+
+finalize()
+```
+
+## Your turn {data-background=#4CDBB7}
+
+> Generate 1000 random samples from uniform(0,1) distribution on each worker, calculate the mean and find the minimul of all workers.
+
+---
+
+
+```r
+library(pbdMPI, quiet = TRUE)
+init()
+
+mx <- mean(runif(1000,0,1))
+
+sm <- allreduce(mx, op = "max")
+comm.print(sm, all.rank = TRUE)
+
+finalize()
+```
 ## Gather
 
 - Gather: Say each processor has a number. Create a new object on some processor(s)
@@ -134,6 +164,32 @@ containing all of those numbers.
     - `gather(x.gbd)` — only one processor gets result
     - `allgather(x.gbd)` — every processor gets result
     
+
+## Your turn {data-background=#4CDBB7}
+
+> Generate 1000 random samples from uniform(0,1) distribution on each worker, calculate the total mean of all samples on worker 0
+
+---
+
+```r
+library(pbdMPI, quiet = TRUE)
+init()
+myRank <- comm.rank() 
+
+x <- runif(1000,0,1)
+
+xx <- gather(x, unlist = TRUE)
+
+if ( myRank == 0){
+mean_xx <- mean(xx)
+}
+
+comm.print(mean_xx)
+
+finalize()
+```
+
+
 ## Broadcast and Barrier
 
 - Broadcast: One processor has a number `x.gbd` that every other processor should also
@@ -142,26 +198,7 @@ have.
 - Barrier: “computation wall”; no processor can proceed until all processors can proceed.
     - `barrier()`
     
-
-## Example 2
-
-```r
-library(pbdMPI, quiet = TRUE)
-init()
-
-n <- sample(1:10, size = 1)
-gt <- gather(n)
-comm.print(unlist(gt))
-
-sm <- allreduce(n, op = "sum")
-comm.print(sm, all.rank = TRUE)
-
-
-finalize()
-```
-- try run this example multiple times
-
----
+## Example
 
 ```r
 library(pbdMPI, quiet = TRUE)
@@ -180,24 +217,81 @@ comm.print(x, all.rank = TRUE)
 
 finalize()
 ```
+
+
+## Your turn {data-background=#4CDBB7}
+
+> Generate 1000 random samples from uniform(0,1) distribution on each worker, calculate the total mean of all samples on worker 0, send global mean back to all workers and calculate variance of the samples for each worker.
+
+---
+
+
+```r
+library(pbdMPI, quiet = TRUE)
+init()
+myRank <- comm.rank()
+
+x <- runif(1000, 0, 1)
+
+xx <- gather(x, unlist = TRUE)
+
+if (myRank == 0) {
+  mean_xx <- mean(xx)
+} else {
+  mean_xx <- NULL
+}
+
+mean_global <- bcast(mean_xx)
+
+vars <- sum((x - mean_global)^2) / 1000
+
+comm.print(vars, all.rank = TRUE)
+
+finalize()
+```
+
+
 ## RNG Seeds
 
 - Random Seeds:
     - `comm.set.seed(seed, diff=FALSE)`: every processor uses the seed seed
     - `comm.set.seed(seed, diff=TRUE)`: every processor uses an independent seed (via `rlecuyer`)
 
+
+
+## Your turn {data-background=#4CDBB7}
+
+> Try the same variance calculation example, but use same seed for each worker.
+
 ---
 
 ```r
-library(pbdMPI, quietly = TRUE)
+library(pbdMPI, quiet = TRUE)
 init()
+comm.set.seed(12345, diff=FALSE)
 
-myRank <- comm.rank() 
+myRank <- comm.rank()
 
-comm.print("Hello, world")
+x <- runif(1000, 0, 1)
+
+xx <- gather(x, unlist = TRUE)
+
+if (myRank == 0) {
+  mean_xx <- mean(xx)
+} else {
+  mean_xx <- NULL
+}
+
+mean_global <- bcast(mean_xx)
+
+vars <- sum((x - mean_global)^2) / 1000
+
+comm.print(vars, all.rank = TRUE)
 
 finalize()
 ```
+
+
 
 ## Caution
 
@@ -215,9 +309,7 @@ comm.print(myResult)
 - `pbdLapply(X, FUN, ...)` — analogue of lapply()
 - `pbdSapply(X, FUN, ...)` — analogue of sapply()
 
----
-
-example
+## Example
 
 ```r
 library(pbdMPI, quiet = TRUE)
@@ -231,10 +323,28 @@ comm.print(unlist(sm))
 finalize()
 ```
 
+## Your turn {data-background=#4CDBB7}
+
+> Use `babynames` dataset, find average number of baby born by name. save it to a csv file.
+
+```
+library(pbdMPI, quiet = TRUE)
+library(babynames)
+init()
+
+x <- split(babynames$n, babynames$name)
+sm <- pbdLapply(x, mean)
+
+write.csv(sm, "output.csv")
+finalize()
+```
+
+
+
 ## Exercises
 
 1. Write a script that will have each processor randomly take a sample of size 1 of TRUE and FALSE. Have each processor print its result.
-2. Modify the script in Exercise 3-1 above to determine if any processors sampled TRUE. Do the same to determine if all processors sampled TRUE. In each case, print the result. Compare to the functions comm.all() and comm.any(). 
+2. Modify the script in bbove to determine if any processors sampled TRUE. Do the same to determine if all processors sampled TRUE. In each case, print the result. Compare to the functions comm.all() and comm.any(). 
 3. In pbdMPI, there is a parallel sorting function called comm.sort() which is similar to the usual sort() of R. Implement parallel equivalents to the usual order() and rank() of R.
 
 
