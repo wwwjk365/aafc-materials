@@ -389,8 +389,8 @@ mpi.stat <- function(x.gbd) {
 ## Example 3 --- Random Forest
 
 ```r
-set.seed (seed =123)
-n <- nrow (LetterRecognition)
+set.seed(seed =123)
+n <- nrow(LetterRecognition)
 
 ## get train data
 

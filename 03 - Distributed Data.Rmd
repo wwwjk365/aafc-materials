@@ -171,7 +171,41 @@ dx <- as.ddmatrix(x)
 
 ## Conclusion
 - Read the most natural way from disk then redistribute
-- Mostly “do it yourself” with bounding box
+- Mostly "do it yourself" with bounding box
 - Parallel file system for big data
 - Binary files for true parallel reads
 - Use correct number of readers vs number of storage servers
+
+
+## Your turn {data-background=#4CDBB7}
+
+> Import `diamonds.csv`, build an linear model to predict diamond price using all variables. 
+Then predict the price of a 2 carat diamond with 50/50 table/depth, and 5mm on each dimension.
+
+---
+
+```r
+suppressMessages(library(pbdDMAT))
+init.grid()
+
+if (comm.rank() == 0) { # only read on process 0
+  x <- as.matrix(read.csv("diamonds.csv"))[,-1]
+  y <- as.matrix(read.csv("diamonds.csv"))[,1]
+} else {
+  x <- NULL
+  y <- NULL
+}
+
+dx <- as.ddmatrix(x)
+dy <- as.ddmatrix(y)
+
+model <- lm.fit(dx, dy)
+
+dx.new <- as.ddmatrix(matrix(c(2,60,60,5,5,5), nrow = 1, ncol = 6))
+
+pred <- dx.new %*% model$coefficients
+
+comm.cat(paste("\nThe predicted diamond price is:", submatrix(pred), "\n"), quiet=T)
+
+finalize()
+```
