@@ -125,7 +125,6 @@ finalize()
 - each processor has a number `x`; add all of them up, find the largest/smallest, ...
 - `reduce(x, op=’sum’)` — reduce to one
 - `allreduce(x, op=’sum’)` — reduce to all
-
 ```r
 library(pbdMPI, quiet = TRUE)
 init()
@@ -296,7 +295,7 @@ finalize()
 ## Caution
 
 - Only print *results*, not *computations*
-    - `comm . print ( myFunction (x.gbd ))`
+    - `comm.print ( myFunction (x.gbd ))`
 - In short, printing stored objects is safe
 ```r
 myResult <- myFunction(x)

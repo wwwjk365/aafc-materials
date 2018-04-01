@@ -59,6 +59,23 @@ ddmatrix.
     - `%*%`, `solve()`, `svd()`, `norm()`, ...
     - `median()`, `mean()`, `rowSums()`, ...
 
+## Random Matrix
+
+```r
+library(pbdDMAT, quiet = TRUE)
+init.grid()
+
+if (comm.rank () ==0) {
+x <- matrix( rnorm (100) , nrow =10 , ncol =10)
+} else {
+x <- NULL
+}
+
+dx <- as.ddmatrix (x)
+
+finalize()
+```
+
 ## Example 1 - Some Functions
 
 ```r
@@ -82,11 +99,33 @@ comm.print(mx, all.rank = TRUE)
 finalize()
 ```
 
+## sd of each column
+
+```r
+library(pbdDMAT, quiet = TRUE)
+init.grid()
+
+if (comm.rank() ==0) {
+x <- matrix( rnorm (100) , nrow =10 , ncol =10)
+} else {
+x <- NULL
+}
+
+dx <- as.ddmatrix(x)
+
+sds <- apply(dx, MARGIN =2,FUN=sd)
+finalize()
+```
+
+
+
+
 ## Example 2 - Transformations
 
 ```r
 library(pbdDMAT, quiet = TRUE)
 init.grid()
+
 comm.set.seed(1234, diff = TRUE)
 dx <- ddmatrix(data = -3:3, nrow = 10, ncol = 10)
 dx <- ceiling(sqrt(abs(dx)))
