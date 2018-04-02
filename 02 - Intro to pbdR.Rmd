@@ -125,6 +125,9 @@ finalize()
 - each processor has a number `x`; add all of them up, find the largest/smallest, ...
 - `reduce(x, op=’sum’)` — reduce to one
 - `allreduce(x, op=’sum’)` — reduce to all
+
+---
+
 ```r
 library(pbdMPI, quiet = TRUE)
 init()
@@ -143,7 +146,6 @@ finalize()
 > Generate 1000 random samples from uniform(0,1) distribution on each worker, calculate the mean and find the minimul of all workers.
 
 ---
-
 
 ```r
 library(pbdMPI, quiet = TRUE)
@@ -223,7 +225,6 @@ finalize()
 > Generate 1000 random samples from uniform(0,1) distribution on each worker, calculate the total mean of all samples on worker 0, send global mean back to all workers and calculate variance of the samples for each worker.
 
 ---
-
 
 ```r
 library(pbdMPI, quiet = TRUE)
@@ -326,6 +327,8 @@ finalize()
 
 > Use `babynames` dataset, find average number of baby born by name. save it to a csv file.
 
+---
+
 ```
 library(pbdMPI, quiet = TRUE)
 library(babynames)
@@ -365,7 +368,6 @@ finalize()
 ```
 
 
-
 ## Example 2 --- Sample Mean and Variance
 
 ```r
@@ -380,7 +382,7 @@ mpi.stat <- function(x.gbd) {
   s.x <- allreduce(s.x.gbd, op = "sum") - bar.x^2 * (N / (N - 1))
 
   list(mean = bar.x, s = s.x)
-} # End of mpi.stat ()
+} # End of mpi.stat()
 
 
 ```

@@ -15,10 +15,6 @@ output:
 
 ## How data get stored in clusters?
 
-## Distributed Matrices
-
-![](imgs/dmat5.PNG)
-
 ## Matrix Distribution Schemes
 
 ![](imgs/dmat1.PNG)
@@ -42,14 +38,46 @@ ddmatrix.
 
 ![](imgs/dmat6.PNG)
 
+- `ICTXT = 0` Block-Cyclic
+- `ICTXT = 1` Column Block
+- `ICTXT = 2` Row Block
+
+## Your turn {data-background=#4CDBB7}
+
+> Build a 5x5 matrix and run on 4 workers, check how data got distributed, are they the same as you expected?
+
+---
+
+```r
+suppressMessages(library(pbdDMAT, quietly = TRUE))
+init.grid()
+
+{
+  if (comm.rank()==0)
+    A <- matrix(1:25, 5,5)
+  else
+    A <- NULL
+}
+
+dA <- as.ddmatrix(A, bldim=2) # distribute
+
+print(dA)
+comm.print(submatrix(dA), all.rank = TRUE)
+
+newA <- redistribute(dA, bldim=1, ICTXT=1)
+print(newA)
+comm.print(submatrix(newA), all.rank = TRUE)
+
+finalize()
+```
+
 ## Summary
 
-1. `DMAT` is distributed. No one processor owns all of the matrix.
-2. `DMAT` is non-overlapping. Any piece owned by one processor is owned by no other processors.
-3. `DMAT` can be row-contiguous or not, depending on the blocking factor used.
-4. Processor 0 = (0, 0) will always own at least as much data as every other processor.
-5. `DMAT` is locally column-major and globally, it depends. . .
-6. `DMAT` is confusing, but very robust and useful for matrix algebra (and thus most non-trivial statistics).
+- `DMAT` is distributed. No one processor owns all of the matrix.
+- `DMAT` is non-overlapping. Any piece owned by one processor is owned by no other processors.
+- `DMAT` can be row-contiguous or not, depending on the blocking factor used.
+- `DMAT` is locally column-major and globally, it depends. . .
+- `DMAT` is confusing, but very robust and useful for matrix algebra (and thus most non-trivial statistics).
 
 ## Methods
 
@@ -66,12 +94,12 @@ library(pbdDMAT, quiet = TRUE)
 init.grid()
 
 if (comm.rank () ==0) {
-x <- matrix( rnorm (100) , nrow =10 , ncol =10)
+x <- matrix(rnorm(100) , nrow =10 , ncol =10)
 } else {
 x <- NULL
 }
 
-dx <- as.ddmatrix (x)
+dx <- as.ddmatrix(x)
 
 finalize()
 ```
@@ -99,14 +127,14 @@ comm.print(mx, all.rank = TRUE)
 finalize()
 ```
 
-## sd of each column
+## `apply` functions
 
 ```r
 library(pbdDMAT, quiet = TRUE)
 init.grid()
 
 if (comm.rank() ==0) {
-x <- matrix( rnorm (100) , nrow =10 , ncol =10)
+x <- matrix(rnorm(100) , nrow =10 , ncol =10)
 } else {
 x <- NULL
 }
@@ -116,8 +144,6 @@ dx <- as.ddmatrix(x)
 sds <- apply(dx, MARGIN =2,FUN=sd)
 finalize()
 ```
-
-
 
 
 ## Example 2 - Transformations
